@@ -26,17 +26,23 @@ public class CommandExecutor {
                 int port = inputHandler.getValidPort();
                 String login = inputHandler.getNonEmptyInput("Введите логин SFTP-сервера");
                 String password = inputHandler.getNonEmptyInput("Введите пароль SFTP-сервера");
-                connected = sftpClient.connectToSftpServer(address, String.valueOf(port), login, password);
+                
+                try {
+                    connected = sftpClient.connectToSftpServer(address, String.valueOf(port), login, password);
+                } catch (Exception e) {
+                    System.out.println("Ошибка подключения: " + e.getMessage());
+                }
+                
                 if (!connected) {
                     String response = inputHandler.getNonEmptyInput("Желаете продолжить? да/нет");
-                    if (response.equalsIgnoreCase("нет")) {
+                    if (!response.equalsIgnoreCase("да")) {
                         continueTrying = false;
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Произошла ошибка: " + e.getMessage());
+                System.out.println("Ошибка ввода данных: " + e.getMessage());
                 String response = inputHandler.getNonEmptyInput("Желаете продолжить? да/нет");
-                if (response.equalsIgnoreCase("нет")) {
+                if (!response.equalsIgnoreCase("да")) {
                     continueTrying = false;
                 }
             }
@@ -125,6 +131,4 @@ public class CommandExecutor {
     public boolean isConnected() {
         return sftpClient.isConnected();
     }
-
-
 }
